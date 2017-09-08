@@ -1,5 +1,5 @@
 import arcade.key
-from random import randint
+from random import randint, random
 
 DIR_HORIZONTAL = 0
 DIR_VERTICAL = 1
@@ -13,8 +13,32 @@ class Model:
     def hit(self, other, hit_size):
         return (abs(self.x - other.x) <= hit_size) and (abs(self.y - other.y) <= hit_size)
 
+class Asteroid(Model):
+    def __init__(self, world, x, y, vx, vy):
+        super().__init__(world, x, y, 0)
+        self.vx = vx
+        self.vy = vy
+        self.angle = randint(0,359)
+
+    def random_direction(self):
+        self.vx = 5 * random()
+        self.vy = 5 * random()
+        
+    def animate(self, delta):
+        if (self.x < 0) or (self.x > self.world.width):
+            self.vx = - self.vx
+        
+        if (self.y < 0) or (self.y > self.world.height):
+            self.vy = - self.vy
+        
+        self.x += self.vx
+        self.y += self.vy
+        self.angle += 3
+
+
 
 class Ship(Model):
+
     DIR_HORIZONTAL = 0
     DIR_VERTICAL = 1
     def __init__(self, world, x, y):
@@ -42,6 +66,7 @@ class Ship(Model):
 
 
 class World():
+    NUM_ASTEROID = 10
     def __init__(self, width, height):
         
         self.width = width
@@ -49,14 +74,28 @@ class World():
  
         self.ship = Ship(self,100, 100)
         self.gold = Gold(self, 400, 400)
+        self.asteroids = []
+        for i in range(World.NUM_ASTEROID):
+            asteroid = Asteroid(self, 0, 0, 0, 0)
+            asteroid.random_direction()
+            self.asteroids.append(asteroid)
         self.score = 0
 
     def update(self, delta):
         self.ship.update(delta)
 
-        if self.ship.hit(self.gold, 10):
+        if self.ship.hit(self.gold, 40):
             self.gold.random_location()
             self.score += 1
+        
+        for asteroid in self.asteroids:
+            asteroid.animate(delta)
+            if self.ship.hit(asteroid, 10):
+                self.score -= 1
+                asteroid.x = 0
+                asteroid.y = 0
+                asteroid.random_direction()
+
 
     def on_key_press(self, key, key_modifiers):
         if key == arcade.key.SPACE:
