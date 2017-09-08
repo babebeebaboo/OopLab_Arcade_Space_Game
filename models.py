@@ -34,7 +34,7 @@ class Asteroid(Model):
         self.x += self.vx
         self.y += self.vy
         self.angle += 3
-
+    
 
 
 class Ship(Model):
@@ -67,11 +67,13 @@ class Ship(Model):
 
 class World():
     NUM_ASTEROID = 10
-    def __init__(self, width, height):
+    def __init__(self, window, width, height):
         
         self.width = width
         self.height = height
- 
+
+        self.window = window
+
         self.ship = Ship(self,100, 100)
         self.gold = Gold(self, 400, 400)
         self.asteroids = []
@@ -80,6 +82,28 @@ class World():
             asteroid.random_direction()
             self.asteroids.append(asteroid)
         self.score = 0
+
+    
+    def addAsteriod(self, key, key_modifiers):
+        pass
+
+    def on_key_press(self, key, key_modifiers):
+        if key == arcade.key.SPACE:
+            self.ship.switch_direction()
+
+        if key == arcade.key.Z:
+            self.NUM_ASTEROID += 1
+            asteroid = Asteroid(self, 0, 0, 0, 0)
+            asteroid.random_direction()
+            self.asteroids.append(asteroid)
+            self.window.insert_asteroid(asteroid)
+
+        if key == arcade.key.X:
+            if self.NUM_ASTEROID !=0 :
+                self.NUM_ASTEROID -= 1
+                self.asteroids.pop()
+                self.window.pop_asteroid()
+                
 
     def update(self, delta):
         self.ship.update(delta)
@@ -95,11 +119,6 @@ class World():
                 asteroid.x = 0
                 asteroid.y = 0
                 asteroid.random_direction()
-
-
-    def on_key_press(self, key, key_modifiers):
-        if key == arcade.key.SPACE:
-            self.ship.switch_direction()
 
 class Gold(Model):
     def __init__(self, world, x, y):

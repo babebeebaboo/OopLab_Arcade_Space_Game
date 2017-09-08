@@ -26,23 +26,28 @@ class SpaceGameWindow(arcade.Window):
  
         arcade.set_background_color(arcade.color.BLACK)
         #self.ship_sprite = arcade.Sprite('images/ship.png')
-        self.world = World(width, height)        # แทนที่บรรทัด ship
+        self.world = World(self, width, height)        # แทนที่บรรทัด ship
         self.ship_sprite = ModelSprite('images/ship.png',model=self.world.ship)
         self.gold_sprite = ModelSprite('images/gold.png',model=self.world.gold)
         self.asteroid_sprites = []
         for asteroid in self.world.asteroids:
             self.asteroid_sprites.append(ModelSprite('images/ship.png',scale=0.5,model=asteroid))
 
- 
-
     def on_draw(self):
         arcade.start_render()
         self.gold_sprite.draw()
         self.ship_sprite.draw()
+
+        # self.asteroid_sprites = self.world.asteroids.copy()
+
+        #del self.asteroid_sprites[:]
+        #for asteroid in self.world.asteroids:
+        #    self.asteroid_sprites.append(ModelSprite('images/ship.png',scale=0.5,model=asteroid))
+
         for sprite in self.asteroid_sprites:
             sprite.draw()
 
-        arcade.draw_text(str(self.world.score),
+        arcade.draw_text(str(self.world.NUM_ASTEROID),
                         self.width - 60, self.height - 30,
                         arcade.color.WHITE, 20)
  
@@ -52,6 +57,11 @@ class SpaceGameWindow(arcade.Window):
 
     def on_key_press(self, key, key_modifiers):
         self.world.on_key_press(key, key_modifiers)
+
+    def insert_asteroid(self, x):
+        self.asteroid_sprites.append(ModelSprite('images/ship.png',scale=0.5,model=x))
+    def pop_asteroid(self):
+        self.asteroid_sprites.pop()
 
 if __name__ == '__main__':
     window = SpaceGameWindow(SCREEN_WIDTH, SCREEN_HEIGHT)
