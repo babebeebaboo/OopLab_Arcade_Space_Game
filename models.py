@@ -126,3 +126,4 @@ class Gold(Model):
     def random_location(self):
         self.x = randint(0, self.world.width - 1)
         self.y = randint(0, self.world.height - 1)
+        
