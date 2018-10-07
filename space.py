@@ -25,7 +25,6 @@ class SpaceGameWindow(arcade.Window):
         super().__init__(width, height)
  
         arcade.set_background_color(arcade.color.BLACK)
-        #self.ship_sprite = arcade.Sprite('images/ship.png')
         self.world = World(self, width, height)        # แทนที่บรรทัด ship
         self.ship_sprite = ModelSprite('images/ship.png',model=self.world.ship)
         self.gold_sprite = ModelSprite('images/gold.png',model=self.world.gold)
@@ -38,12 +37,6 @@ class SpaceGameWindow(arcade.Window):
         self.gold_sprite.draw()
         self.ship_sprite.draw()
 
-        # self.asteroid_sprites = self.world.asteroids.copy()
-
-        #del self.asteroid_sprites[:]
-        #for asteroid in self.world.asteroids:
-        #    self.asteroid_sprites.append(ModelSprite('images/ship.png',scale=0.5,model=asteroid))
-
         for sprite in self.asteroid_sprites:
             sprite.draw()
 
@@ -53,7 +46,6 @@ class SpaceGameWindow(arcade.Window):
  
     def update(self, delta):
         self.world.update(delta)
-        #self.ship_sprite.set_position(self.world.ship.x, self.world.ship.y)
 
     def on_key_press(self, key, key_modifiers):
         self.world.on_key_press(key, key_modifiers)
@@ -66,3 +58,4 @@ class SpaceGameWindow(arcade.Window):
 if __name__ == '__main__':
     window = SpaceGameWindow(SCREEN_WIDTH, SCREEN_HEIGHT)
     arcade.run()
+    
